@@ -59,12 +59,39 @@ impl<T> SlowVec<T> {
     }
 
     pub fn push(&mut self, t: T) {
-        todo!()
+        let n = self.len();
+        let mut tmp = FixedSizeArray::allocate(n+1);
+
+        for i in 0..n {
+            let element = self.fixed.move_out(i);
+            tmp.put(element, i);
+
+        }
+        tmp.put(t, n);
+        self.fixed = tmp;
+
     }
 
     pub fn remove(&mut self, i: usize) {
-        todo!()
+   let n = self.len();
+   assert!(i < n);
+
+   let mut tmp = FixedSizeArray::allocate(n-1);
+
+   for j in 0..n {
+    if j != i {
+        let element = self.fixed.move_out(j);
+
+        if j < i {
+            tmp.put(element, j);
+        } else {
+            tmp.put(element, j-1);
+        }
     }
+   } 
+   self.fixed = tmp; 
+
+}
 }
 
 
